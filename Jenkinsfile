@@ -3,6 +3,7 @@ pipeline{
 
     tools {
         nodejs 'node26'
+        owasp-dependency-check 'OWASP-12.2.2'
     }
 
     stages{
@@ -32,6 +33,11 @@ pipeline{
                     '''
                 }
             }
+        stage("OWASP Dependency Check") {
+            steps {
+                dependencyCheck additionalArguments: '--scan . --format ALL --out . --prettyPrint'
+            }
+        }
 
 
     }
