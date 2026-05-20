@@ -37,6 +37,7 @@ pipeline {
             steps {
                 // Fixed: Added the required 'odcInstallation' parameter pointing to your tool name
                 dependencyCheck odcInstallation: 'OWASP-12.2.2', additionalArguments: '--scan . --format ALL --out . --prettyPrint'
+                junit allowEmptyResults: true, testResults: 'dependency-check-report.xml'
                 dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true
             }
         }
