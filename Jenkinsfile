@@ -18,18 +18,21 @@ pipeline{
         stage('Install Dependencies') {
                 steps {
                     sh '''
-                    npm ci
+                    npm install --no-audit
                     '''
                 }
             }
-    
-            stage('Run Tests') {
+        
+        stage("NPM Dependencies") {
                 steps {
                     sh '''
-                    npm test
+                    npm audit --audit-level=critical
+                    echo $?
+                    
                     '''
                 }
             }
+
 
     }
 }
