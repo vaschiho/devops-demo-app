@@ -1,0 +1,29 @@
+{
+  "name": "devops-demo-app",
+  "version": "1.0.0",
+  "description": "A Node.js REST API for CI/CD pipeline testing",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --forceExit --detectOpenHandles --verbose",
+    "test:coverage": "jest --coverage --forceExit --detectOpenHandles",
+    "lint": "eslint src/ tests/"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": ["**/tests/**/*.js"],
+    "collectCoverageFrom": ["src/**/*.js"]
+  },
+  "keywords": ["nodejs", "express", "devops", "cicd", "demo"],
+  "author": "DevOps Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4",
+    "nodemon": "^3.0.2"
+  }
+}

@@ -1,0 +1,19 @@
+# Fleet Production Configuration
+# Changes to this file should NOT trigger the CI/CD pipeline
+
+environment: production
+replicas: 3
+resources:
+  requests:
+    cpu: "250m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+image:
+  repository: devops-demo-app
+  tag: latest
+  pullPolicy: Always
+service:
+  port: 3000
+  targetPort: 3000
