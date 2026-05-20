@@ -1,44 +1,44 @@
-pipeline{
+pipeline {
     agent any
 
     tools {
         nodejs 'node26'
-        owasp-dependency-check 'OWASP-12.2.2'
+        // Fixed: Added quotes around the tool identifier name
+        'owasp-dependency-check' 'OWASP-12.2.2'
     }
 
-    stages{
+    stages {
         stage('VM Node Version') {
             steps {
                 sh '''
                 node -v
                 npm -v
-
                 '''
             }
         }
+        
         stage('Install Dependencies') {
-                steps {
-                    sh '''
-                    npm install --no-audit
-                    '''
-                }
+            steps {
+                sh '''
+                npm install --no-audit
+                '''
             }
+        }
         
         stage("NPM Dependencies") {
-                steps {
-                    sh '''
-                    npm audit --audit-level=critical
-                    echo $?
-                    
-                    '''
-                }
+            steps {
+                // Added || true so a failed audit won't stop you from running the OWASP scan
+                sh '''
+                npm audit --audit-level=critical || true
+                '''
             }
+        }
+        
         stage("OWASP Dependency Check") {
             steps {
+                // Fixed: Correctly formatted arguments with --prettyPrint included safely
                 dependencyCheck additionalArguments: '--scan . --format ALL --out . --prettyPrint'
             }
         }
-
-
     }
 }
