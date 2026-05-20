@@ -3,8 +3,8 @@ pipeline {
 
     tools {
         nodejs 'node26'
-        // Fixed: Added quotes around the tool identifier name
-        'owasp-dependency-check' 'OWASP-12.2.2'
+        // Fixed: Changed identifier to 'dependency-check' as required by Jenkins
+        'dependency-check' 'OWASP-12.2.2'
     }
 
     stages {
@@ -27,7 +27,6 @@ pipeline {
         
         stage("NPM Dependencies") {
             steps {
-                // Added || true so a failed audit won't stop you from running the OWASP scan
                 sh '''
                 npm audit --audit-level=critical || true
                 '''
@@ -36,8 +35,8 @@ pipeline {
         
         stage("OWASP Dependency Check") {
             steps {
-                // Fixed: Correctly formatted arguments with --prettyPrint included safely
-                dependencyCheck additionalArguments: '--scan . --format ALL --out . --prettyPrint'
+                // Fixed: Added the required 'odcInstallation' parameter pointing to your tool name
+                dependencyCheck odcInstallation: 'OWASP-12.2.2', additionalArguments: '--scan . --format ALL --out . --prettyPrint'
             }
         }
     }
