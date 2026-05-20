@@ -41,5 +41,12 @@ pipeline {
                 dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true
             }
         }
+        stage("Unit Tests") {
+            steps {
+                sh '''
+                npm test
+                '''
+            }
+        }
     }
 }
