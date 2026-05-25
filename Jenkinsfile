@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node26'
+        nodejs 'node26',
+        sonarScanner 'sonarqube8.1.0.6389'
     }
 
     stages {
@@ -83,6 +84,17 @@ pipeline {
                     reportFiles: 'index.html',
                     reportName: 'Code Coverage Report'
                 ])
+            }
+        }
+        stage("SonarQube Analysis") {
+            steps {
+                    sh '''
+                    sonar-scanner \
+                        -Dsonar.projectKey=devops-demo \
+                        -Dsonar.sources=app.js \
+                        -Dsonar.host.url=http://102.217.214.64:9004 \
+                        -Dsonar.login=sqp_1d774c3f8e671c660e4550e0ed4762b4501dae32
+                    '''
             }
         }
     }
