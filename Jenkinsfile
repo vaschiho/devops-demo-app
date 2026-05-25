@@ -67,7 +67,7 @@ pipeline {
 
                 catchError(
                     buildResult: 'SUCCESS',
-                    message: 'Oops! it may be fixed later',
+                    message: 'Oops! it may be fixed later but for now, it is unstable',
                     stageResult: 'UNSTABLE'
                 ) {
                     sh '''
