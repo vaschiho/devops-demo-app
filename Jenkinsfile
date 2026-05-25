@@ -3,11 +3,10 @@ pipeline {
 
     tools {
         nodejs 'node26'
-        // Fixed: Changed identifier to 'dependency-check' as required by Jenkins
-        'dependency-check' 'OWASP-12.2.2'
     }
 
     stages {
+
         stage('VM Node Version') {
             steps {
                 sh '''
@@ -16,18 +15,19 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Install Dependencies') {
             options {
                 timeout(time: 10, unit: 'MINUTES')
             }
+
             steps {
                 sh '''
                 npm install --no-audit
                 '''
             }
         }
-        
+
         stage("NPM Dependencies") {
             steps {
                 sh '''
@@ -35,15 +35,25 @@ pipeline {
                 '''
             }
         }
-        
+
         stage("OWASP Dependency Check") {
             steps {
-                // Fixed: Added the required 'odcInstallation' parameter pointing to your tool name
-                dependencyCheck odcInstallation: 'OWASP-12.2.2', additionalArguments: '--scan . --format ALL --out . --prettyPrint'
-                junit allowEmptyResults: true, testResults: 'dependency-check-report.xml'
-                dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true
+                dependencyCheck(
+                    odcInstallation: 'OWASP-12.2.2',
+                    additionalArguments: '--scan . --format ALL --out . --prettyPrint'
+                )
+
+                junit allowEmptyResults: true,
+                      testResults: 'dependency-check-report.xml'
+
+                dependencyCheckPublisher(
+                    failedTotalCritical: 1,
+                    pattern: 'dependency-check-report.xml',
+                    stopBuild: true
+                )
             }
         }
+
         stage("Unit Tests") {
             steps {
                 sh '''
@@ -51,23 +61,29 @@ pipeline {
                 '''
             }
         }
-        stage("Code Coverage"){
+
+        stage("Code Coverage") {
             steps {
-                catchError(buildResult: 'SUCCESS', message: 'Oops! it may be fixed later', stageResult: 'UNSTABLE') {
+
+                catchError(
+                    buildResult: 'SUCCESS',
+                    message: 'Oops! it may be fixed later',
+                    stageResult: 'UNSTABLE'
+                ) {
                     sh '''
-                npm run test:coverage
-                '''
-    // some block
-                }    
+                    npm run test:coverage
+                    '''
+                }
+
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'coverage/lcov-report',
+                    reportFiles: 'index.html',
+                    reportName: 'Code Coverage Report'
+                ])
             }
-            publishHTML (target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: 'coverage/lcov-report',
-                reportFiles: 'index.html',
-                reportName: "Code Coverage Report"
-            ])
         }
     }
 }
