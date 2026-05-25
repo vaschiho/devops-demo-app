@@ -3,7 +3,10 @@ pipeline {
 
     tools {
         nodejs 'node26',
-        sonarScanner 'sonarqube8.1.0.6389'
+    }
+
+    environment {
+        scannerHome = tool 'sonarqube8.1.0.6389'
     }
 
     stages {
@@ -88,8 +91,9 @@ pipeline {
         }
         stage("SonarQube Analysis") {
             steps {
+                    sh 'echo ${scannerHome}'
                     sh '''
-                    sonar-scanner \
+                    $scannerHome/bin/sonar-scanner \
                         -Dsonar.projectKey=devops-demo \
                         -Dsonar.sources=app.js \
                         -Dsonar.host.url=http://102.217.214.64:9004 \
