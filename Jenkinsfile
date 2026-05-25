@@ -107,5 +107,14 @@ pipeline {
             }
 
         }
+        stage("Build Docker Image") {
+            steps {
+                sh "printenv"
+
+                sh '''
+                docker build -t temitayo15/devops-demo:$GIT_COMMIT .
+                '''
+            }
+        }
     }
 }

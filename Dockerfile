@@ -1,7 +1,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 #  Stage 1 — Dependencies
 # ─────────────────────────────────────────────────────────────────────────────
-FROM node:20-alpine AS deps
+FROM node:24-alpine AS deps
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ RUN npm ci --only=production
 # ─────────────────────────────────────────────────────────────────────────────
 #  Stage 2 — Builder (includes dev deps for testing)
 # ─────────────────────────────────────────────────────────────────────────────
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ COPY . .
 # ─────────────────────────────────────────────────────────────────────────────
 #  Stage 3 — Production Image
 # ─────────────────────────────────────────────────────────────────────────────
-FROM node:20-alpine AS production
+FROM node:24-alpine AS production
 
 # Install dumb-init for proper signal handling
 RUN apk add --no-cache dumb-init
