@@ -116,5 +116,59 @@ pipeline {
                 '''
             }
         }
+
+        stage('Trivy Vulnerability Scanner') {
+            steps {
+                sh '''
+                    trivy image temitayo15/devops-demo:${GIT_COMMIT} \
+                        --severity LOW,MEDIUM \
+                        --exit-code 0 \
+                        --quiet \
+                        --format json \
+                        -o trivy-image-MEDIUM-results.json
+
+                    trivy image temitayo15/devops-demo:${GIT_COMMIT} \
+                        --severity HIGH,CRITICAL \
+                        --exit-code 1 \
+                        --quiet \
+                        --format json \
+                        -o trivy-image-CRITICAL-results.json
+                '''
+            }
+        }
+        post {
+            always {
+                sh '''
+                    trivy convert \
+                        --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
+                        --output trivy-image-MEDIUM-results.html trivy-image-MEDIUM-results.json
+
+                    trivy convert \
+                        --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
+                        --output trivy-image-CRITICAL-results.html trivy-image-CRITICAL-results.json
+
+                    trivy convert \
+                        --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \
+                        --output trivy-image-MEDIUM-results.xml trivy-image-MEDIUM-results.json
+
+                    trivy convert \
+                        --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \
+                        --output trivy-image-CRITICAL-results.xml trivy-image-CRITICAL-results.json
+                    '''
+            }
+        }
+        post {
+            always {
+
+                junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
+                junit allowEmptyResults: true, stdioRetention: '',  testResults: 'dependency-check-junit.xml'
+                publishHTML([ allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: './',  reportFiles: 'trivy-image-MEDIUM-results.html', reportName: 'Trivy Image MEDIUM Vulnerabilities' ])
+                publishHTML([ allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: './',  reportFiles: 'trivy-image-CRITICAL-results.html', reportName: 'Trivy Image CRITICAL Vulnerabilities' ])
+                publishHTML([ allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: './',  reportFiles: 'index.html', reportName: 'HTML Report' ])  
+                publishHTML([ allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html',  reportName: 'Coverage Report' ])
+       
+                
+            }
+        }
     }
 }
