@@ -44,7 +44,7 @@ pipeline {
             steps {
                 dependencyCheck(
                     odcInstallation: 'OWASP-12.2.2',
-                    additionalArguments: '--scan . --format ALL --out . --prettyPrint'
+                    additionalArguments: '--scan . --format ALL --out . --disableYarnAudit --prettyPrint' 
                 )
 
                 junit allowEmptyResults: true,
@@ -91,17 +91,21 @@ pipeline {
         }
         stage("SonarQube Analysis") {
             steps {
-                withSonarQubeEnv('sonar-qube-server') {   
+                timeout(time: 60, unit: 'SECONDS') {
+                    withSonarQubeEnv('sonar-qube-server') {   
 
-                    sh 'echo ${scannerHome}'
-                    sh '''
-                    $scannerHome/bin/sonar-scanner \
-                        -Dsonar.projectKey=devops-demo \
-                        -Dsonar.sources=. \
-                        -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info \
-                    '''
+                        sh 'echo ${scannerHome}'
+                        sh '''
+                        $scannerHome/bin/sonar-scanner \
+                            -Dsonar.projectKey=devops-demo \
+                            -Dsonar.sources=. \
+                            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info \
+                        '''
+                    }
+                    waitForQualityGate abortPipeline: true
+                }
             }
-            }
+
         }
     }
 }
