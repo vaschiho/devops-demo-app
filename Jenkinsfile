@@ -91,15 +91,16 @@ pipeline {
         }
         stage("SonarQube Analysis") {
             steps {
+                withSonarQubeEnv('sonar-qube-server') {   
+
                     sh 'echo ${scannerHome}'
                     sh '''
                     $scannerHome/bin/sonar-scanner \
                         -Dsonar.projectKey=devops-demo \
                         -Dsonar.sources=. \
-                        -Dsonar.host.url=http://102.217.214.64:9004 \
                         -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info \
-                        -Dsonar.login=sqp_1d774c3f8e671c660e4550e0ed4762b4501dae32
                     '''
+            }
             }
         }
     }
