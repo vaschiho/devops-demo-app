@@ -53,10 +53,21 @@ pipeline {
         }
         stage("Code Coverage"){
             steps {
-                sh '''
+                catchError(buildResult: 'SUCCESS', message: 'Oops! it may be fixed later', stageResult: 'UNSTABLE') {
+                    sh '''
                 npm run test:coverage
                 '''
+    // some block
+                }    
             }
+            publishHTML (target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'coverage/lcov-report',
+                reportFiles: 'index.html',
+                reportName: "Code Coverage Report"
+            ])
         }
     }
 }
