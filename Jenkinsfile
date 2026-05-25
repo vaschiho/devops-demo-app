@@ -54,7 +54,7 @@ pipeline {
         stage("Code Coverage"){
             steps {
                 sh '''
-                npm run coverage
+                npm run test:coverage
                 '''
             }
         }

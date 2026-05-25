@@ -8,6 +8,7 @@
     "dev": "nodemon src/server.js",
     "test": "jest --forceExit --detectOpenHandles --verbose",
     "test:coverage": "jest --coverage --forceExit --detectOpenHandles",
+    "coverage": "jest --coverage --forceExit --detectOpenHandles",
     "lint": "eslint src/ tests/"
   },
   "jest": {
