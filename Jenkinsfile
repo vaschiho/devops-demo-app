@@ -18,6 +18,9 @@ pipeline {
         }
         
         stage('Install Dependencies') {
+            options {
+                timeout(time: 10, unit: 'MINUTES')
+            }
             steps {
                 sh '''
                 npm install --no-audit
