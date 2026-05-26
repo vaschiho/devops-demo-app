@@ -203,14 +203,14 @@ pipeline {
             steps {
                 script {
                     sshagent(['aws-dev-deploy-ec2']) {
-                        sh '''
-                            ssh -o StrictHostKeyChecking=no ubuntu@13.220.93.9 << 'EOF'
-                                docker pull temitayo15/devops-demo:${GIT_COMMIT}
-                                docker stop devops-demo || true
-                                docker rm devops-demo || true
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ubuntu@13.220.93.9 '
+                                docker pull temitayo15/devops-demo:${GIT_COMMIT} &&
+                                docker stop devops-demo || true &&
+                                docker rm devops-demo || true &&
                                 docker run -d --name devops-demo -p 3000:3000 temitayo15/devops-demo:${GIT_COMMIT}
-                            EOF
-                        '''
+                            '
+                        """
                     }
                 }
             }
