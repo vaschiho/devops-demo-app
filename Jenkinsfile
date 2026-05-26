@@ -197,9 +197,9 @@ pipeline {
          }
 
          stage("EC2 Deployment"){
-           when {
-                branch 'feature/*'
-            }
+        //    when {
+        //         branch 'feature/*'
+        //     }
             steps {
                 script {
                     sshagent(['aws-dev-deploy-ec2']) {
