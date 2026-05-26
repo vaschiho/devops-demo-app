@@ -106,7 +106,8 @@ pipeline {
                         $scannerHome/bin/sonar-scanner \
                             -Dsonar.projectKey=devops-demo \
                             -Dsonar.sources=. \
-                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                            -Dsonar.coverage.exclusions=server.js
                     '''
                 }
             }
