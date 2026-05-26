@@ -76,7 +76,7 @@ pipeline {
                 catchError(
                     buildResult: 'SUCCESS',
                     stageResult: 'UNSTABLE',
-                    message: 'Coverage failed but pipeline continues'
+                    message: 'Coverage failed but pipeline continues to publish report'
                 ) {
 
                     sh '''
