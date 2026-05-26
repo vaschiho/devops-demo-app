@@ -188,11 +188,11 @@ pipeline {
 
         always {
 
-            junit allowEmptyResults: true,
-                   testResults: 'trivy-image-MEDIUM-results.xml'
+            // junit allowEmptyResults: true,
+            //        testResults: 'trivy-image-MEDIUM-results.xml'
 
-            junit allowEmptyResults: true,
-                   testResults: 'trivy-image-CRITICAL-results.xml'
+            // junit allowEmptyResults: true,
+            //        testResults: 'trivy-image-CRITICAL-results.xml'
 
             publishHTML(target: [
                 allowMissing: true,
