@@ -198,7 +198,7 @@ pipeline {
 
          stage("EC2 Deployment"){
            when {
-                branch 'feature'
+                branch 'feature/*'
             }
             steps {
                 script {
